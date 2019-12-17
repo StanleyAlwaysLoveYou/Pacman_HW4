@@ -88,10 +88,11 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
         # print "computeActionFromQValues"
         if len(self.getLegalActions(state))==0:
+              # print state
               return None
         u = util.Counter()
-        actions = []
-        max = self.getQvalue(state,self.getLegalActions(state)[0])
+        max = self.getQValue(state,self.getLegalActions(state)[0])
+        actions = [self.getLegalActions(state)[0]]
         for action in self.getLegalActions(state):
               u[state,action] = self.getQValue(state,action)
               if u[state,action]>max:
@@ -99,6 +100,7 @@ class QLearningAgent(ReinforcementAgent):
                     max = u[state,action]
               elif u[state] == max:
                     actions.append(action)
+        # print actions
         return random.choice(actions)
          
         # util.raiseNotDefined()
@@ -118,7 +120,12 @@ class QLearningAgent(ReinforcementAgent):
         legalActions = self.getLegalActions(state)
         action = None
         "*** YOUR CODE HERE ***"
-        print "self.epsilon:", self.epsilon
+        if len(legalActions)==0:
+              return None
+        if util.flipCoin(self.epsilon):
+              return random.choice(legalActions)
+        else:
+              return self.computeActionFromQValues(state)
         # util.raiseNotDefined()
 
         return action
