@@ -206,7 +206,13 @@ class ApproximateQAgent(PacmanQAgent):
         """
         # Use self.featExtractor.getFeatures(state,action) to get the features
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # print self.featExtractor.getFeatures(state,action)
+        # print self.getWeights()
+        Q = 0
+        for i in self.featExtractor.getFeatures(state,action):
+              Q += self.getWeights()[i]*self.featExtractor.getFeatures(state,action)[i]
+        return Q
+        # util.raiseNotDefined()
 
     def update(self, state, action, nextState, reward):
         """
@@ -214,7 +220,16 @@ class ApproximateQAgent(PacmanQAgent):
         """
         # You may use self.getLegalActions(state) and self.getQValue(state,action)
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        u = [self.getQValue(nextState,a) for a in self.getLegalActions(nextState)]
+        if len(u)==0:
+              u = [0]
+        differece = reward + self.discount*max(u)-self.getQValue(state,action)
+        # newWeights = util.Counter()
+        for i in self.featExtractor.getFeatures(state,action):
+              # print (s,a), self.getWeights()[(s,a)]
+              # print "-----------------------------------"
+              self.weights[i] = self.getWeights()[i] + self.alpha*differece*self.featExtractor.getFeatures(state,action)[i]
+        # util.raiseNotDefined()
 
     def final(self, state):
         "Called at the end of each game."
@@ -225,4 +240,5 @@ class ApproximateQAgent(PacmanQAgent):
         if self.episodesSoFar == self.numTraining:
             # you might want to print your weights here for debugging
             "*** YOUR CODE HERE ***"
+            # print self.getWeights()
             pass
